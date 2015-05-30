@@ -23,7 +23,7 @@ $(function() {
   var lastTypingTime;
   var $currentInput = $usernameInput.focus();
 
-  var socket = io("/chat/");
+  var socket = io("192.168.44.128:8081",{path:"/chatserver/"});
 
   function addParticipantsMessage (data) {
     var message = '';
