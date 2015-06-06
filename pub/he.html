@@ -7,16 +7,16 @@ function connect() {
   if (ws !== null) 
     return log('already connected');
 
-  ws = eio('ws://192.168.44.128:8081/chatserver/');
-  socket.on('open', function(){
+  ws = new eio.Socket('ws://192.168.44.128:8081',{path:'/chatserver/',transports:['websocket']});
+  ws.on('open', function(){
     log('connected');
-    socket.on('message', function(data){
+  });
+  ws.on('message', function(data){
        log('recv: ' + data);
-    });
-    socket.on('close', function(){
+  });
+  ws.on('close', function(){
       log('disconnected');
       ws = null;
-    });
   });
 
   return false;
@@ -25,6 +25,7 @@ function connect() {
 function disconnect() {
   if (ws === null) return log('already disconnected');
   ws.close();
+  ws = null;
   return false;
 }
 function send() {
