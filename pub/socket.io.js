@@ -802,7 +802,7 @@ Socket.prototype.packet = function(packet){
 
 Socket.prototype.onopen = function(){
   debug('transport is open - connecting');
-
+  this.onconnect();
   // write connect packet if necessary
   if ('/' != this.nsp) {
     this.packet({ type: parser.CONNECT });
@@ -1770,6 +1770,9 @@ Socket.prototype.setTransport = function(transport){
 
   // set up transport listeners
   transport
+  .on('open',function(){
+    self.onOpen();
+  })
   .on('drain', function(){
     self.onDrain();
   })
@@ -1912,6 +1915,7 @@ Socket.prototype.onOpen = function () {
   debug('socket open');
   this.readyState = 'open';
   Socket.priorWebsocketSuccess = 'websocket' == this.transport.name;
+ // this.onconnect();
   this.emit('open');
   this.flush();
 
