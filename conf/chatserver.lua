@@ -1,4 +1,5 @@
 local server = require "resty.websocket.server"
+local cjson = require "cjson"
 local wb, err = server:new{
   timeout = 5000,
   max_payload_len = 65535
@@ -29,7 +30,14 @@ while true do
   elseif typ == "pong" then
     ngx.log(ngx.INFO, "client ponged")
   elseif typ == "text" then
-    local bytes, err = wb:send_text(data)
+    ngx.log(ngx.INFO, "receive text: ", data)
+    local bytes,err
+    local rec_data = cjson.decode(string.sub(data,3))
+    if (rec_data[1] == "add user") then
+	bytes, err = wb:send_text('42["login",{"numUsers":20}]')
+    else    
+        bytes, err = wb:send_text(data)
+    end   
     if not bytes then
       ngx.log(ngx.ERR, "failed to send text: ", err)
       return ngx.exit(444)
