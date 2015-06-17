@@ -31,13 +31,17 @@ while true do
     ngx.log(ngx.INFO, "client ponged")
   elseif typ == "text" then
     ngx.log(ngx.INFO, "receive text: ", data)
-    local bytes,err
     local rec_data = cjson.decode(string.sub(data,3))
-    if (rec_data[1] == "add user") then
-	bytes, err = wb:send_text('42["login",{"numUsers":20}]')
-    else    
-        bytes, err = wb:send_text(data)
-    end   
+    
+    local send_data
+    if rec_data[1] == "add user" then
+	send_data = {"login",{numUsers=20}}
+    elseif rec_data[1] == "new message" then
+	send_data = {"new message",{username="xi",message=rec_data[2]}}
+    else 
+	send_data = {rec_data[1],{username="xi"}}
+    end  
+    local bytes, err = wb:send_text('42'..cjson.encode(send_data))
     if not bytes then
       ngx.log(ngx.ERR, "failed to send text: ", err)
       return ngx.exit(444)
