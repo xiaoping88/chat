@@ -23,7 +23,7 @@ $(function() {
   var lastTypingTime;
   var $currentInput = $usernameInput.focus();
 
-  var socket = io("192.168.44.128:8081",{path:"/chatserver/",timeout:false,
+  var socket = io("192.168.126.134:8080",{path:"/chatserver/",timeout:false,
 			upgrade:true,
 			rememberUpgrade:true,
 			transports:["websocket"]});

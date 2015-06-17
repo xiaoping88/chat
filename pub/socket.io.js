@@ -366,8 +366,8 @@ Manager.prototype.connect = function(fn){
 Manager.prototype.onopen = function(){
   debug('open');
 
-  // clear old subs
-  this.cleanup();
+  // clear old subs ,为啥打开的时候要清除？
+  // this.cleanup();
 
   // mark as open
   this.readyState = 'open';

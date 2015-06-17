@@ -1,10 +1,43 @@
 <html>
 <head>
 <script>
+
+function parseuri (str) {
+	  var re = /^(?:(?![^:@]+:[^:@\/]*@)(http|https|ws|wss):\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?((?:[a-f0-9]{0,4}:){2,7}[a-f0-9]{0,4}|[^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/;
+
+	  var parts = [
+		        'source', 'protocol', 'authority', 'userInfo', 'user', 'password', 'host'
+			    , 'port', 'relative', 'path', 'directory', 'file', 'query', 'anchor'
+			      
+		  ];
+
+	  var parse = function(str){
+		      var m = re.exec(str || '')
+			              , uri = {}
+		              , i = 14;
+
+			      while (i--) {
+				             uri[parts[i]] = m[i] || '';
+					         
+			      }
+
+			          return uri;
+				    
+	  }
+
+	    return parse(str);
+	      
+
+}
+
+
 var ws = null;
 function connect() {
   if (ws !== null) return log('already connected');
-  ws = new WebSocket('ws://192.168.44.128:8081/chatserver/');
+
+  var uri = parseuri(document.URL);
+  ws = new WebSocket('ws://'+ uri.host + ':' + uri.port + '/chatserver/');
+
   ws.onopen = function () {
     log('connected');
   };
